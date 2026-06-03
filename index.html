@@ -1146,23 +1146,20 @@ window.onclick=e=>{
 };
 </script>
 <!-- SECCIÓN DEL CÓDIGO QR -->
-<div style="text-align: center; padding: 40px; background-color: #0a0a0a;">
-    <h2 style="color: #d4af37; font-family: 'Cormorant Garamond', serif; letter-spacing: 2px; margin-bottom: 20px;">ESCANEA PARA RESERVAR</h2>
+<!-- NUEVA SECCIÓN QR LIMPIA -->
+<div style="margin-top: 40px; padding: 30px 20px; background-color: #0a0a0a; border-top: 1px solid #333; text-align: center;">
     
-    <!-- Contenedor del QR -->
-    <div id="qr-container" style="display: inline-block; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);">
-        <!-- La API generará el QR aquí mismo -->
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://jcfontanills1984.github.io/Noir--barbero-a/&color=d4af37&bgcolor=000000" 
-             alt="QR Noir Barbería" 
-             style="width: 200px; height: 200px; display: block;">
-        
-        <!-- Logo superpuesto en el centro (Tijeras) -->
-        <div style="position: relative; top: -130px; left: 0; width: 100%; text-align: center; pointer-events: none;">
-            <img src="https://cdn-icons-png.flaticon.com/512/3503/3503978.png" 
-                 style="width: 50px; height: 50px; background: #000; border-radius: 50%; padding: 5px; border: 2px solid #d4af37;">
-        </div>
+    <h3 style="color: #d4af37; font-family: 'Cormorant Garamond', serif; letter-spacing: 3px; margin-bottom: 25px; text-transform: uppercase; font-size: 1.2rem;">
+        Escanea para Reservar
+    </h3>
+
+    <!-- Contenedor del QR con fondo blanco para que se lea bien -->
+    <div style="display: inline-block; padding: 15px; background: #ffffff; border-radius: 8px; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://jcfontanills1984.github.io/noir-barberia-vip/&color=000000&bgcolor=ffffff" 
+             alt="QR Noir" 
+             style="width: 180px; height: 180px; display: block;">
     </div>
-    
-    <p style="color: #888; font-size: 0.8rem; margin-top: 15px;">NOIR BARBERÍA VIP</p>
+
+    <p style="color: #666; font-size: 0.75rem; margin-top: 20px; letter-spacing: 1px;">NOIR BARBERÍA VIP</p>
 </div></body>
 </html>
