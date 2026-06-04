@@ -1145,21 +1145,20 @@ window.onclick=e=>{
   });
 };
 </script>
-<!-- SECCIÓN DEL CÓDIGO QR -->
-<!-- NUEVA SECCIÓN QR LIMPIA -->
-<div style="margin-top: 40px; padding: 30px 20px; background-color: #0a0a0a; border-top: 1px solid #333; text-align: center;">
+<!-- QR INTEGRADO EN LA PANTALLA DE BIENVENIDA -->
+<div style="margin: 20px auto; padding: 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid #d4af37; border-radius: 12px; text-align: center; max-width: 90%;">
     
-    <h3 style="color: #d4af37; font-family: 'Cormorant Garamond', serif; letter-spacing: 3px; margin-bottom: 25px; text-transform: uppercase; font-size: 1.2rem;">
-        Escanea para Reservar
-    </h3>
+    <h4 style="color: #d4af37; font-family: 'Cormorant Garamond', serif; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; font-size: 1rem;">
+        Acceso VIP Directo
+    </h4>
 
-    <!-- Contenedor del QR con fondo blanco para que se lea bien -->
-    <div style="display: inline-block; padding: 15px; background: #ffffff; border-radius: 8px; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://jcfontanills1984.github.io/noir-barberia-vip/&color=000000&bgcolor=ffffff" 
-             alt="QR Noir" 
-             style="width: 180px; height: 180px; display: block;">
+    <!-- Contenedor del QR -->
+    <div style="display: inline-block; padding: 10px; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://jcfontanills1984.github.io/noir-barberia-vip/&color=000000&bgcolor=ffffff" 
+             alt="QR Noir Barbería" 
+             style="width: 150px; height: 150px; display: block;">
     </div>
 
-    <p style="color: #666; font-size: 0.75rem; margin-top: 20px; letter-spacing: 1px;">NOIR BARBERÍA VIP</p>
+    <p style="color: #aaa; font-size: 0.7rem; margin-top: 10px; letter-spacing: 1px;">Escanea para reservar tu cita</p>
 </div></body>
 </html>
