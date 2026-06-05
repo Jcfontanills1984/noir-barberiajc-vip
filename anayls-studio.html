@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ANAYL'S — Nail Artistry & Beauty</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bk:#1a0a14;--bk2:#220d1a;--bk3:#2d1022;--bk4:#3a1530;
+  --rose:#e8649a;--rose-l:#f291b8;--rose-d:#a03060;--rose-pale:#fce4ef;
+  --silver:#c8d4e0;--silver-l:#e8f0f8;--silver-d:#7890a8;--silver-dim:#4a5a6a;
+  --gold:#d4a84b;--gold-l:#e8c97a;
+  --w:#fdf0f6;--wd:#c090a8;
+  --purple:#6b2d82;--purple-l:#9b4db2;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bk);color:var(--w);font-family:'Montserrat',sans-serif;font-weight:300;}
+
+/* NOISE GRAIN */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");opacity:.8;}
+
+/* APP SHELL */
+#app{position:fixed;inset:0;display:flex;flex-direction:column;z-index:1;}
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden;}
+.screen.active{display:flex;}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.1rem;
+  border-bottom:1px solid rgba(232,100,154,.15);
+  background:linear-gradient(135deg,var(--bk2),var(--bk3));
+  flex-shrink:0;min-height:52px;}
+.hdr-logo{font-family:'Playfair Display',serif;color:var(--rose);font-size:1.3rem;letter-spacing:.15em;font-style:italic;}
+.hdr-back{background:none;border:1px solid rgba(232,100,154,.3);color:var(--rose);cursor:pointer;
+  font-size:.62rem;letter-spacing:.12em;padding:.35rem .7rem;font-family:'Montserrat',sans-serif;
+  text-transform:uppercase;transition:all .2s;}
+.hdr-title{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--wd);}
+
+/* SCROLL */
+.scroll{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;padding-bottom:1rem;}
+
+/* BUTTONS */
+.btn-r{background:linear-gradient(135deg,var(--rose-d),var(--rose),var(--rose-l));color:var(--w);border:none;
+  padding:.88rem 1.4rem;font-family:'Montserrat',sans-serif;font-size:.67rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.btn-r::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.2) 50%,transparent 60%);transform:translateX(-100%);transition:.4s;}
+.btn-r:active::after{transform:translateX(100%);}
+.btn-s{background:transparent;color:var(--silver);border:1px solid var(--silver-dim);padding:.88rem 1.4rem;
+  font-family:'Montserrat',sans-serif;font-size:.67rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-s:active{border-color:var(--silver);color:var(--silver-l);}
+.btn-sm{padding:.45rem .85rem;font-size:.6rem;letter-spacing:.12em;}
+.btn-xs{padding:.3rem .6rem;font-size:.57rem;letter-spacing:.1em;}
+.btn-rd{background:rgba(139,32,32,.6);color:var(--w);border:none;padding:.38rem .65rem;font-size:.58rem;font-family:'Montserrat',sans-serif;cursor:pointer;}
+.btn-gr{background:rgba(26,120,70,.7);color:var(--w);border:none;padding:.38rem .65rem;font-size:.58rem;font-family:'Montserrat',sans-serif;cursor:pointer;}
+
+/* FORMS */
+.field{margin-bottom:.95rem;}
+.field label{display:block;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--wd);margin-bottom:.38rem;}
+.field input,.field select,.field textarea{width:100%;background:var(--bk3);border:1px solid rgba(232,100,154,.2);
+  color:var(--w);padding:.72rem .9rem;font-family:'Montserrat',sans-serif;font-size:.76rem;
+  outline:none;transition:border-color .25s;-webkit-appearance:none;resize:vertical;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--rose);}
+.field select option{background:var(--bk3);}
+
+/* SPLASH */
+#splash{align-items:center;justify-content:center;overflow:auto;
+  background:radial-gradient(ellipse at 50% 35%,#3d1530 0%,#1a0a14 65%);}
+.spl-in{text-align:center;padding:2rem 1.5rem;animation:fadeUp .9s ease both;}
+.spl-diamonds{font-size:1.2rem;color:var(--rose);letter-spacing:.5rem;margin-bottom:.5rem;animation:sparkle 3s infinite;}
+@keyframes sparkle{0%,100%{opacity:1}50%{opacity:.4}}
+.spl-name{font-family:'Playfair Display',serif;font-size:3.8rem;font-weight:700;letter-spacing:.1em;
+  background:linear-gradient(135deg,var(--rose-d),var(--rose-l),var(--silver-l),var(--rose));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;text-shadow:none;}
+.spl-sub{font-size:.58rem;letter-spacing:.38em;color:var(--silver-d);text-transform:uppercase;margin-top:.5rem;}
+.spl-tagline{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--wd);font-size:1rem;margin-top:.4rem;}
+.spl-line{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--rose),transparent);margin:1.3rem auto;}
+.spl-btns{margin-top:2rem;display:flex;flex-direction:column;gap:.7rem;width:258px;}
+.spl-info{margin-top:1.5rem;font-size:.62rem;color:var(--wd);letter-spacing:.08em;}
+.spl-info span{color:var(--rose);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* PIN */
+.pin-wrap{display:flex;flex-direction:column;align-items:center;padding:3rem 1.5rem;gap:.75rem;overflow:auto;}
+.pin-wrap h2{font-family:'Playfair Display',serif;color:var(--rose);font-size:1.45rem;text-align:center;font-style:italic;}
+.pin-wrap p{font-size:.67rem;color:var(--wd);text-align:center;max-width:260px;}
+.pin-in{font-size:1.8rem;letter-spacing:.45em;text-align:center;background:var(--bk3);
+  border:1px solid rgba(232,100,154,.3);color:var(--rose);width:180px;padding:.75rem;
+  outline:none;font-family:'Playfair Display',serif;}
+.pin-in:focus{border-color:var(--rose);}
+
+/* APPOINTMENT CARD (CLIENT) */
+.apt-hero{margin:1.1rem;padding:1.3rem;
+  background:linear-gradient(135deg,#2d1030,#1a0818 50%,#2a0d28);
+  border:1px solid rgba(232,100,154,.3);position:relative;overflow:hidden;}
+.apt-hero::before{content:'💅';position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:3rem;opacity:.08;}
+.apt-hero-title{font-family:'Playfair Display',serif;font-style:italic;color:var(--rose-l);font-size:1.1rem;margin-bottom:.3rem;}
+.apt-hero-sub{font-size:.62rem;color:var(--wd);line-height:1.6;}
+.apt-hero-sub span{color:var(--rose);}
+
+/* MENU CATEGORIES */
+.cat-hdr{display:flex;align-items:center;gap:.7rem;padding:.9rem 1.1rem .5rem;margin-top:.3rem;}
+.cat-ico{font-size:1.3rem;}
+.cat-name{font-family:'Playfair Display',serif;color:var(--rose);font-size:1rem;font-style:italic;}
+.cat-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(232,100,154,.3),transparent);}
+
+.svc-block{background:var(--bk2);border:1px solid rgba(232,100,154,.1);margin:0 1.1rem .55rem;}
+.svc-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.svc-row:last-child{border-bottom:none;}
+.svc-nm{font-size:.78rem;color:var(--w);}
+.svc-pr{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--rose);}
+.svc-row-header{display:grid;grid-template-columns:1fr 1fr 1fr;padding:.5rem 1rem;background:rgba(232,100,154,.06);}
+.svc-row-header span{font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--wd);text-align:right;}
+.svc-row-header span:first-child{text-align:left;}
+.svc-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;padding:.65rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.svc-row-3:last-child{border-bottom:none;}
+.svc-row-3 span:not(:first-child){text-align:right;}
+.svc-row-3 span:first-child{font-size:.78rem;color:var(--w);}
+.svc-row-3 span:not(:first-child){font-family:'Playfair Display',serif;font-size:.88rem;color:var(--rose);}
+
+/* PROMO BADGE */
+.promo-bar{margin:1.1rem;padding:.9rem 1.1rem;
+  background:linear-gradient(135deg,rgba(232,100,154,.08),rgba(107,45,130,.08));
+  border:1px solid rgba(232,100,154,.28);display:flex;align-items:center;gap:.75rem;}
+.pb-ico{font-size:1.5rem;}
+.pb-txt strong{font-family:'Playfair Display',serif;color:var(--rose-l);font-size:.95rem;font-style:italic;display:block;}
+.pb-txt span{font-size:.6rem;color:var(--wd);}
+
+/* SCHEDULE */
+.date-row{display:flex;gap:.45rem;overflow-x:auto;padding-bottom:.35rem;margin-bottom:1.1rem;}
+.dpill{flex-shrink:0;padding:.48rem .75rem;border:1px solid rgba(232,100,154,.2);text-align:center;cursor:pointer;transition:all .2s;min-width:48px;}
+.dpill .dn{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--w);display:block;}
+.dpill .dd{font-size:.5rem;color:var(--wd);letter-spacing:.07em;}
+.dpill.sel{border-color:var(--rose);background:rgba(232,100,154,.1);}
+.dpill.sel .dn{color:var(--rose);}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem;margin-bottom:1.1rem;}
+.tslot{padding:.62rem;border:1px solid rgba(232,100,154,.18);text-align:center;font-size:.67rem;color:var(--wd);cursor:pointer;transition:all .2s;}
+.tslot:hover,.tslot.sel{border-color:var(--rose);color:var(--rose);background:rgba(232,100,154,.06);}
+.tslot.tak{opacity:.3;cursor:not-allowed;text-decoration:line-through;}
+
+/* ADMIN STATS */
+.astats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(232,100,154,.08);margin:1.1rem;border:1px solid rgba(232,100,154,.08);}
+.astat{background:var(--bk2);padding:.8rem .3rem;text-align:center;}
+.astat .n{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--rose);display:block;font-style:italic;}
+.astat .l{font-size:.48rem;color:var(--wd);letter-spacing:.08em;text-transform:uppercase;}
+
+/* ADMIN TABS */
+.atabs{display:flex;border-bottom:1px solid rgba(232,100,154,.12);background:var(--bk2);flex-shrink:0;overflow-x:auto;}
+.atab{flex:0 0 auto;padding:.72rem .7rem;background:none;border:none;cursor:pointer;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--wd);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;}
+.atab.act{color:var(--rose);border-bottom-color:var(--rose);}
+
+/* APT ADMIN CARD */
+.aptc{background:var(--bk2);border:1px solid rgba(232,100,154,.1);padding:.9rem;display:flex;align-items:flex-start;gap:.8rem;margin-bottom:.55rem;}
+.aptc.today{border-left:3px solid var(--rose);}
+.apt-hr{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--rose);display:block;line-height:1;}
+.apt-ampm{font-size:.5rem;color:var(--wd);letter-spacing:.07em;}
+.apt-info{flex:1;min-width:0;}
+.apt-nm{font-size:.8rem;color:var(--w);}
+.apt-sv{font-size:.6rem;color:var(--wd);margin-top:.12rem;}
+.apt-sv span{color:var(--rose-pale);}
+.apt-st{font-size:.5rem;padding:.1rem .45rem;border:1px solid;letter-spacing:.1em;text-transform:uppercase;margin-top:.28rem;display:inline-block;}
+.sp-pend{border-color:rgba(232,100,154,.5);color:var(--rose);}
+.sp-conf{border-color:#2aac6a;color:#2aac6a;}
+.sp-done{border-color:var(--wd);color:var(--wd);}
+.apt-acts{display:flex;flex-direction:column;gap:.28rem;flex-shrink:0;}
+
+/* TODAY ALERT */
+.today-alert{margin:1.1rem;padding:.95rem 1.1rem;background:rgba(232,100,154,.06);border:1px solid rgba(232,100,154,.3);display:flex;align-items:center;gap:.8rem;}
+.ta-ico{font-size:1.7rem;}
+.ta-txt strong{font-family:'Playfair Display',serif;color:var(--rose-l);font-size:.95rem;font-style:italic;display:block;}
+.ta-txt span{font-size:.62rem;color:var(--wd);}
+
+/* ADMIN SVC */
+.svc-admin{background:var(--bk2);border:1px solid rgba(232,100,154,.1);padding:.9rem;display:flex;align-items:center;gap:.75rem;margin-bottom:.55rem;}
+.svc-admin.promo{border-left:3px solid var(--rose);}
+.svico{font-size:1.3rem;flex-shrink:0;}
+.svinfo{flex:1;min-width:0;}
+.svnm{font-size:.8rem;color:var(--w);}
+.svdesc{font-size:.58rem;color:var(--wd);margin-top:.1rem;}
+.svpr{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--rose);}
+.svold{font-size:.62rem;color:var(--wd);text-decoration:line-through;margin-left:.4rem;}
+.svbadge{font-size:.49rem;background:var(--rose);color:var(--w);padding:.1rem .38rem;letter-spacing:.1em;font-weight:600;margin-left:.3rem;}
+.svacts{display:flex;gap:.28rem;flex-shrink:0;}
+
+/* REVIEW */
+.rvcard{background:var(--bk2);border:1px solid rgba(232,100,154,.1);padding:.9rem;margin-bottom:.55rem;}
+.rv-top{display:flex;justify-content:space-between;margin-bottom:.4rem;}
+.rv-nm{font-size:.78rem;color:var(--w);}
+.rv-dt{font-size:.55rem;color:var(--wd);}
+.rv-stars{color:var(--rose);font-size:.9rem;margin-bottom:.35rem;}
+.rv-txt{font-size:.7rem;color:var(--wd);line-height:1.7;font-style:italic;}
+.rv-sug{font-size:.65rem;color:var(--rose-pale);margin-top:.4rem;border-top:1px solid rgba(232,100,154,.12);padding-top:.4rem;}
+
+/* STAR RATING */
+.stars-in{display:flex;gap:.4rem;margin-bottom:.5rem;}
+.star{font-size:1.5rem;cursor:pointer;color:rgba(232,100,154,.3);transition:color .15s;}
+.star.on{color:var(--rose);}
+
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(10,0,8,.9);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+.mov.open{display:flex;animation:fin .18s;}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+.modal{background:var(--bk2);border:1px solid rgba(232,100,154,.25);border-bottom:none;width:100%;max-width:440px;padding:1.5rem;max-height:90vh;overflow-y:auto;animation:sup .28s both;}
+@keyframes sup{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal h3{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--rose);font-style:italic;margin-bottom:.22rem;}
+.modal p{font-size:.67rem;color:var(--wd);margin-bottom:1.1rem;}
+.modal-acts{display:flex;gap:.55rem;margin-top:1.1rem;}
+
+/* MISC */
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(232,100,154,.2),transparent);margin:.7rem 1.1rem;}
+.empty{color:var(--wd);font-size:.7rem;text-align:center;padding:2.2rem;font-style:italic;}
+.sec-hdr{padding:.9rem 1.1rem .45rem;display:flex;justify-content:space-between;align-items:center;}
+.stitle{font-family:'Playfair Display',serif;color:var(--rose);font-size:1rem;font-style:italic;}
+
+/* BOTTOM NAV */
+.bnav{display:flex;border-top:1px solid rgba(232,100,154,.12);background:var(--bk2);flex-shrink:0;}
+.nb{flex:1;padding:.8rem .2rem;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.22rem;color:var(--wd);font-size:.5rem;letter-spacing:.07em;text-transform:uppercase;transition:color .2s;}
+.nb.act,.nb:active{color:var(--rose);}
+.nb span{font-size:1rem;}
+
+/* TOAST */
+#toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:var(--rose);color:var(--w);padding:.62rem 1.35rem;font-size:.67rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;z-index:9999;display:none;box-shadow:0 4px 20px rgba(232,100,154,.5);pointer-events:none;}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="toast"></div>
+
+<!-- ════ SPLASH ════ -->
+<div id="splash" class="screen active">
+  <div class="spl-in">
+    <div class="spl-diamonds">💎 ✦ 💎</div>
+    <div class="spl-name">ANAYL'S</div>
+    <div class="spl-sub">Studio Profesional de Uñas</div>
+    <div class="spl-tagline">Nail Artistry & Beauty</div>
+    <div class="spl-line"></div>
+    <div class="spl-btns">
+      <button class="btn-r" onclick="show('c-home')">💅 Ver Menú & Agendar</button>
+      <button class="btn-s" onclick="show('admin-pin')">✦ Panel de Anay</button>
+    </div>
+    <div class="spl-info">📞 Citas: <span>55644214</span> &nbsp;·&nbsp; ⏰ <span>8:30 AM – 3:30 PM</span></div>
+  </div>
+</div>
+
+<!-- ════ CLIENT HOME ════ -->
+<div id="c-home" class="screen">
+  <div class="hdr"><div style="width:60px"></div><div class="hdr-logo">ANAYL'S</div><button class="hdr-back btn-xs" onclick="show('splash')">Salir</button></div>
+  <div class="scroll">
+    <!-- HERO -->
+    <div class="apt-hero">
+      <div class="apt-hero-title">Bienvenida al Studio 💅</div>
+      <div class="apt-hero-sub">Agenda tu cita o revisa nuestros servicios.<br>Horario: <span>8:30 AM – 3:30 PM</span> · Citas: <span>55644214</span></div>
+    </div>
+
+    <!-- PROMO -->
+    <div id="c-promo-area"></div>
+
+    <!-- MENÚ COMPLETO -->
+    <!-- BASE RUBBER -->
+    <div class="cat-hdr"><div class="cat-ico">💧</div><div class="cat-name">Base Rubber</div><div class="cat-line"></div></div>
+    <div class="svc-block">
+      <div class="svc-row"><span class="svc-nm">Cortas</span><span class="svc-pr">$1,200</span></div>
+      <div class="svc-row"><span class="svc-nm">Medianas</span><span class="svc-pr">$1,500</span></div>
+      <div class="svc-row"><span class="svc-nm">Largas</span><span class="svc-pr">$1,800</span></div>
+    </div>
+
+    <!-- GEL CONSTRUCCIÓN -->
+    <div class="cat-hdr"><div class="cat-ico">⭐</div><div class="cat-name">Gel Construcción</div><div class="cat-line"></div></div>
+    <div class="svc-block">
+      <div class="svc-row"><span class="svc-nm">Cortas</span><span class="svc-pr">$1,200</span></div>
+      <div class="svc-row"><span class="svc-nm">Medianas</span><span class="svc-pr">$1,400</span></div>
+      <div class="svc-row"><span class="svc-nm">Largas</span><span class="svc-pr">$1,600</span></div>
+    </div>
+
+    <!-- ACRÍLICO -->
+    <div class="cat-hdr"><div class="cat-ico">💎</div><div class="cat-name">Acrílico</div><div class="cat-line"></div></div>
+    <div class="svc-block">
+      <div class="svc-row-header"><span>Tamaño</span><span>Nuevas</span><span>Retoque</span></div>
+      <div class="svc-row-3"><span>Cortas</span><span>$1,600</span><span>$1,500</span></div>
+      <div class="svc-row-3"><span>Medianas</span><span>$2,000</span><span>$1,800</span></div>
+      <div class="svc-row-3"><span>Largas</span><span>$2,500</span><span>$2,000</span></div>
+    </div>
+
+    <!-- SERVICIOS EXTRAS dinámicos -->
+    <div id="extra-svcs"></div>
+
+    <div style="height:1rem"></div>
+  </div>
+  <div class="bnav">
+    <button class="nb act" onclick="nb(this)"><span>💅</span>Menú</button>
+    <button class="nb" onclick="show('c-schedule')"><span>📅</span>Agendar</button>
+    <button class="nb" onclick="show('c-review')"><span>💬</span>Reseña</button>
+  </div>
+</div>
+
+<!-- ════ CLIENT SCHEDULE ════ -->
+<div id="c-schedule" class="screen">
+  <div class="hdr"><button class="hdr-back" onclick="show('c-home')">← Volver</button><div class="hdr-title">Agendar Cita</div><div style="width:70px"></div></div>
+  <div class="scroll" style="padding:1.1rem">
+    <div class="stitle" style="margin-bottom:.8rem">Selecciona Fecha</div>
+    <div class="date-row" id="c-date-row"></div>
+    <div class="stitle" style="margin-bottom:.8rem">Hora Disponible</div>
+    <div class="tgrid" id="c-tgrid"></div>
+    <div class="field"><label>Servicio</label>
+      <select id="c-svc-sel">
+        <option>💧 Base Rubber — Cortas ($1,200)</option>
+        <option>💧 Base Rubber — Medianas ($1,500)</option>
+        <option>💧 Base Rubber — Largas ($1,800)</option>
+        <option>⭐ Gel Construcción — Cortas ($1,200)</option>
+        <option>⭐ Gel Construcción — Medianas ($1,400)</option>
+        <option>⭐ Gel Construcción — Largas ($1,600)</option>
+        <option>💎 Acrílico Nuevas — Cortas ($1,600)</option>
+        <option>💎 Acrílico Nuevas — Medianas ($2,000)</option>
+        <option>💎 Acrílico Nuevas — Largas ($2,500)</option>
+        <option>💎 Acrílico Retoque — Cortas ($1,500)</option>
+        <option>💎 Acrílico Retoque — Medianas ($1,800)</option>
+        <option>💎 Acrílico Retoque — Largas ($2,000)</option>
+      </select></div>
+    <div class="field"><label>Tu nombre</label><input type="text" id="c-nm" placeholder="Ej: María González"></div>
+    <div class="field"><label>Tu teléfono</label><input type="tel" id="c-ph" placeholder="+53 5 000 0000"></div>
+    <div class="field"><label>Nota (diseño, colores, etc.)</label><textarea id="c-note" rows="2" placeholder="Ej: quiero french con piedras rosadas…"></textarea></div>
+    <button class="btn-r" style="width:100%" onclick="bookApt()">Confirmar Cita 💅</button>
+  </div>
+</div>
+
+<!-- ════ CLIENT REVIEW ════ -->
+<div id="c-review" class="screen">
+  <div class="hdr"><button class="hdr-back" onclick="show('c-home')">← Volver</button><div class="hdr-title">Tu Opinión</div><div style="width:70px"></div></div>
+  <div class="scroll" style="padding:1.1rem">
+    <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:var(--rose);margin-bottom:.3rem">Cuéntanos tu Experiencia</div>
+    <div style="font-size:.65rem;color:var(--wd);margin-bottom:1.3rem">Tu opinión nos ayuda a crecer. ¡Gracias por confiar en ANAYL'S!</div>
+    <div class="field"><label>¿Cómo calificarías tu visita?</label>
+      <div class="stars-in" id="star-in">
+        <span class="star" onclick="setStar(1)">★</span>
+        <span class="star" onclick="setStar(2)">★</span>
+        <span class="star" onclick="setStar(3)">★</span>
+        <span class="star" onclick="setStar(4)">★</span>
+        <span class="star" onclick="setStar(5)">★</span>
+      </div></div>
+    <div class="field"><label>Tu nombre</label><input type="text" id="rv-nm" placeholder="Ej: María"></div>
+    <div class="field"><label>¿Cómo fue tu experiencia?</label><textarea id="rv-txt" rows="3" placeholder="Cuéntanos qué te gustó…"></textarea></div>
+    <div class="field"><label>¿Qué podríamos mejorar o agregar?</label><textarea id="rv-sug" rows="2" placeholder="Nuevos diseños, horarios, etc…"></textarea></div>
+    <button class="btn-r" style="width:100%" onclick="sendReview()">Enviar Reseña 💎</button>
+  </div>
+</div>
+
+<!-- ════ ADMIN PIN ════ -->
+<div id="admin-pin" class="screen">
+  <div class="hdr"><button class="hdr-back" onclick="show('splash')">← Inicio</button><div class="hdr-title">Acceso Admin</div><div style="width:70px"></div></div>
+  <div class="pin-wrap">
+    <div style="font-size:2.8rem">🔐</div>
+    <h2>Panel de Anay</h2>
+    <p>Solo personal autorizado · PIN demo: 1234</p>
+    <input class="pin-in" id="a-pin" type="password" placeholder="••••" maxlength="4">
+    <button class="btn-r" style="width:100%;max-width:255px" onclick="verifyPin()">Entrar</button>
+  </div>
+</div>
+
+<!-- ════ ADMIN ════ -->
+<div id="admin" class="screen">
+  <div class="hdr">
+    <div class="hdr-logo" style="font-size:.95rem">✦ ANAYL'S Admin</div>
+    <button class="hdr-back btn-xs" onclick="show('splash')">Salir</button>
+  </div>
+  <div class="astats" id="astats"></div>
+  <div class="atabs">
+    <button class="atab act" onclick="aTab(this,'citas')">📅 Citas</button>
+    <button class="atab" onclick="aTab(this,'extras')">✂ Extras</button>
+    <button class="atab" onclick="aTab(this,'promos')">🎁 Promos</button>
+    <button class="atab" onclick="aTab(this,'resenas')">💬 Reseñas</button>
+    <button class="atab" onclick="aTab(this,'config')">⚙ Config</button>
+  </div>
+  <div class="scroll" id="a-content"></div>
+</div>
+
+<!-- MODALS -->
+<div class="mov" id="m-extra">
+  <div class="modal">
+    <h3 id="me-ttl">Agregar Servicio Extra</h3><p>Servicio adicional al menú principal</p>
+    <input type="hidden" id="me-id">
+    <div class="field"><label>Nombre</label><input type="text" id="me-nm" placeholder="Ej: Diseño artístico"></div>
+    <div class="field"><label>Descripción</label><input type="text" id="me-dc" placeholder="Piedras, glitter, nail art…"></div>
+    <div class="field"><label>Precio (CUP)</label><input type="number" id="me-pr" placeholder="500"></div>
+    <div class="field"><label>Emoji</label><input type="text" id="me-ic" placeholder="✨" maxlength="2"></div>
+    <div class="modal-acts">
+      <button class="btn-r" style="flex:1" onclick="saveExtra()">Guardar</button>
+      <button class="btn-s" style="flex:1" onclick="cm('m-extra')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="mov" id="m-promo">
+  <div class="modal">
+    <h3 id="mp-ttl">Nueva Promoción</h3><p>Crea una oferta especial</p>
+    <input type="hidden" id="mp-id">
+    <div class="field"><label>Título</label><input type="text" id="mp-nm" placeholder="Combo Quinceañera"></div>
+    <div class="field"><label>Descripción</label><textarea id="mp-dc" rows="2" placeholder="Acrílico largo + diseño incluido"></textarea></div>
+    <div class="field"><label>Precio Promo</label><input type="number" id="mp-pr" placeholder="2000"></div>
+    <div class="field"><label>Precio Original</label><input type="number" id="mp-or" placeholder="2500"></div>
+    <div class="field"><label>Válida hasta</label><input type="date" id="mp-un"></div>
+    <div class="modal-acts">
+      <button class="btn-r" style="flex:1" onclick="savePromo()">Publicar</button>
+      <button class="btn-s" style="flex:1" onclick="cm('m-promo')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+let adminPin = "1234";
+let curAdminTab = "citas";
+let selDate = null;
+let selTime = null;
+let starRating = 0;
+let aptSeq = 5;
+
+const today = new Date().toISOString().slice(0,10);
+const tmrw = (()=>{let d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);})();
+
+let extras = [
+  {id:1,name:"Diseño Artístico",desc:"Nail art, piedras, glitter personalizado",price:300,ico:"🎨"},
+  {id:2,name:"Remoción de Acrílico",desc:"Remoción segura sin daño a la uña natural",price:400,ico:"🧴"},
+];
+
+let promos = [
+  {id:1,name:"Combo Quinceañera 👑",desc:"Acrílico largo + diseño artístico incluido",price:2200,orig:2800,until:"2025-12-31"},
+];
+
+let appointments = [
+  {id:1,name:"María González",phone:"55123456",date:today,time:"9:00",svc:"💎 Acrílico Nuevas — Medianas ($2,000)",status:"Pendiente",note:"French con corazones"},
+  {id:2,name:"Claudia Pérez",phone:"55234567",date:today,time:"10:30",svc:"⭐ Gel Construcción — Largas ($1,600)",status:"Confirmada",note:"Color rosado bebé"},
+  {id:3,name:"Daniela Ruiz",phone:"55345678",date:tmrw,time:"9:00",svc:"💧 Base Rubber — Medianas ($1,500)",status:"Pendiente",note:""},
+];
+
+let reviews = [
+  {id:1,name:"María González",date:today,stars:5,txt:"Anay es increíble, mis uñas quedaron perfectas. El diseño superó mis expectativas.",sug:"Sería genial poder ver catálogo de diseños en la app"},
+  {id:2,name:"Claudia Pérez",date:tmrw,stars:5,txt:"Siempre salgo feliz. Puntual, limpia y muy profesional.",sug:"Podrían agregar servicio a domicilio para novias"},
+];
+
+// ── NAV ──
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='admin')renderAdmin();
+  if(id==='c-schedule')buildSchedule();
+  if(id==='c-home')renderClientPromo();
+}
+
+function toast(m){
+  const t=document.getElementById('toast');
+  t.textContent=m;t.style.display='block';
+  clearTimeout(t._to);t._to=setTimeout(()=>t.style.display='none',2800);
+}
+function cm(id){document.getElementById(id).classList.remove('open');}
+function om(id){document.getElementById(id).classList.add('open');}
+function nb(b){document.querySelectorAll('.nb').forEach(x=>x.classList.remove('act'));b.classList.add('act');}
+
+// ── CLIENT MENU ──
+function renderClientPromo(){
+  const pb=document.getElementById('c-promo-area');
+  pb.innerHTML='';
+  const active=promos.filter(p=>!p.until||p.until>=today);
+  if(active.length){
+    const p=active[0];
+    const pct=p.orig?Math.round((1-p.price/p.orig)*100):0;
+    pb.innerHTML=`<div class="promo-bar"><div class="pb-ico">🎁</div><div class="pb-txt"><strong>${p.name}${pct?' — -'+pct+'%':''}</strong><span>${p.desc} · $${p.price.toLocaleString()} hasta ${p.until}</span></div></div>`;
+  }
+  // Extras dinámicos
+  const ex=document.getElementById('extra-svcs');
+  ex.innerHTML='';
+  if(extras.length){
+    ex.innerHTML='<div class="cat-hdr"><div class="cat-ico">✨</div><div class="cat-name">Servicios Adicionales</div><div class="cat-line"></div></div><div class="svc-block" id="extra-list"></div>';
+    const list=document.getElementById('extra-list');
+    extras.forEach(e=>{
+      list.innerHTML+=`<div class="svc-row"><span class="svc-nm">${e.ico} ${e.name}</span><span class="svc-pr">$${e.price.toLocaleString()}</span></div>`;
+    });
+  }
+}
+
+// ── SCHEDULE ──
+function buildSchedule(){
+  const row=document.getElementById('c-date-row');row.innerHTML='';
+  const days=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const now=new Date();
+  for(let i=0;i<7;i++){
+    const d=new Date(now);d.setDate(now.getDate()+i);
+    const ds=d.toISOString().slice(0,10);
+    const pill=document.createElement('div');
+    pill.className='dpill'+(i===0?' sel':'');
+    pill.innerHTML=`<span class="dn">${d.getDate()}</span><span class="dd">${days[d.getDay()]}</span>`;
+    pill.onclick=function(){
+      document.querySelectorAll('.dpill').forEach(p=>p.classList.remove('sel'));
+      this.classList.add('sel');selDate=ds;buildTGrid(ds);
+    };
+    row.appendChild(pill);
+  }
+  selDate=today;buildTGrid(today);
+}
+
+function buildTGrid(date){
+  const grid=document.getElementById('c-tgrid');grid.innerHTML='';
+  const taken=appointments.filter(a=>a.date===date&&a.status!=='Cancelada').map(a=>a.time);
+  selTime=null;
+  ['8:30','9:00','9:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00'].forEach(t=>{
+    const isTk=taken.includes(t);
+    const sl=document.createElement('div');
+    sl.className='tslot'+(isTk?' tak':'');
+    sl.textContent=t;
+    if(!isTk)sl.onclick=function(){document.querySelectorAll('.tslot:not(.tak)').forEach(s=>s.classList.remove('sel'));this.classList.add('sel');selTime=t;};
+    grid.appendChild(sl);
+  });
+}
+
+function bookApt(){
+  if(!selTime){toast('Selecciona una hora');return;}
+  const nm=document.getElementById('c-nm').value.trim();
+  const ph=document.getElementById('c-ph').value.trim();
+  const svc=document.getElementById('c-svc-sel').value;
+  const note=document.getElementById('c-note').value.trim();
+  if(!nm){toast('Escribe tu nombre');return;}
+  appointments.push({id:aptSeq++,name:nm,phone:ph,date:selDate,time:selTime,svc,status:'Pendiente',note});
+  toast(`✅ Cita agendada · ${selTime} · Te esperamos 💅`);
+  document.getElementById('c-nm').value='';
+  document.getElementById('c-ph').value='';
+  document.getElementById('c-note').value='';
+  setTimeout(()=>show('c-home'),1800);
+}
+
+// ── REVIEW ──
+function setStar(v){
+  starRating=v;
+  document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<v));
+}
+
+function sendReview(){
+  if(!starRating){toast('Selecciona una calificación');return;}
+  const nm=document.getElementById('rv-nm').value.trim()||'Anónima';
+  const txt=document.getElementById('rv-txt').value.trim();
+  const sug=document.getElementById('rv-sug').value.trim();
+  if(!txt){toast('Cuéntanos tu experiencia');return;}
+  reviews.push({id:reviews.length+1,name:nm,date:today,stars:starRating,txt,sug});
+  toast('💎 ¡Gracias por tu reseña!');
+  ['rv-nm','rv-txt','rv-sug'].forEach(id=>document.getElementById(id).value='');
+  starRating=0;document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
+  setTimeout(()=>show('c-home'),1500);
+}
+
+// ── ADMIN ──
+function verifyPin(){
+  if(document.getElementById('a-pin').value===adminPin){show('admin');}
+  else toast('PIN incorrecto');
+}
+
+function renderAdmin(){
+  updateStats();
+  if(curAdminTab==='citas')renderCitas();
+  else if(curAdminTab==='extras')renderExtras();
+  else if(curAdminTab==='promos')renderPromos();
+  else if(curAdminTab==='resenas')renderResenas();
+  else if(curAdminTab==='config')renderConfig();
+}
+
+function aTab(b,t){
+  document.querySelectorAll('.atab').forEach(x=>x.classList.remove('act'));
+  b.classList.add('act');curAdminTab=t;renderAdmin();
+}
+
+function updateStats(){
+  const todayApts=appointments.filter(a=>a.date===today&&a.status!=='Cancelada').length;
+  const pend=appointments.filter(a=>a.status==='Pendiente'&&a.date>=today).length;
+  document.getElementById('astats').innerHTML=`
+    <div class="astat"><span class="n">${todayApts}</span><div class="l">Citas Hoy</div></div>
+    <div class="astat"><span class="n">${appointments.filter(a=>a.date>=today&&a.status!=='Cancelada').length}</span><div class="l">Esta Semana</div></div>
+    <div class="astat"><span class="n">${pend}</span><div class="l">Sin Confirmar</div></div>`;
+}
+
+// ── CITAS ──
+function renderCitas(){
+  const todayList=appointments.filter(a=>a.date===today).sort((a,b)=>a.time.localeCompare(b.time));
+  const futureList=appointments.filter(a=>a.date>today).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+  let h='';
+
+  if(todayList.length){
+    h+=`<div class="today-alert"><div class="ta-ico">💅</div><div class="ta-txt"><strong>Hoy tienes ${todayList.length} cita${todayList.length!==1?'s':''}</strong><span>${todayList.map(a=>a.time+' — '+a.name.split(' ')[0]).join(' · ')}</span></div></div>`;
+  } else {
+    h+=`<div class="today-alert"><div class="ta-ico">✅</div><div class="ta-txt"><strong>Sin citas para hoy</strong><span>Día libre 💅</span></div></div>`;
+  }
+
+  h+=`<div class="sec-hdr"><div class="stitle">Hoy — ${fmtDate(today)}</div></div><div style="padding:0 1.1rem">`;
+  if(!todayList.length)h+='<div class="empty">Sin citas hoy</div>';
+  else todayList.forEach(a=>{h+=aptHTML(a,true);});
+  h+='</div>';
+
+  if(futureList.length){
+    h+=`<div class="divider"></div><div class="sec-hdr"><div class="stitle">Próximas Citas</div></div><div style="padding:0 1.1rem">`;
+    futureList.forEach(a=>{h+=aptHTML(a,false);});
+    h+='</div>';
+  }
+  document.getElementById('a-content').innerHTML=h;
+}
+
+function aptHTML(a,isToday){
+  const sc=a.status==='Pendiente'?'sp-pend':a.status==='Confirmada'?'sp-conf':'sp-done';
+  return `<div class="aptc${isToday?' today':''}">
+    <div style="text-align:center;min-width:42px;flex-shrink:0">
+      <span class="apt-hr">${a.time}</span>
+      <span class="apt-ampm">${isToday?'HOY':fmtDateS(a.date)}</span>
+    </div>
+    <div class="apt-info">
+      <div class="apt-nm">${a.name}</div>
+      <div class="apt-sv">💅 <span>${a.svc}</span>${a.note?'<br>💬 '+a.note:''}</div>
+      ${a.phone?`<div style="font-size:.58rem;color:var(--wd)">📞 ${a.phone}</div>`:''}
+      <div class="apt-st ${sc}">${a.status}</div>
+    </div>
+    <div class="apt-acts">
+      ${a.status==='Pendiente'?`<button class="btn-gr btn-xs" onclick="confApt(${a.id})">✓</button>`:''}
+      <button class="btn-rd btn-xs" onclick="cancelApt(${a.id})">✕</button>
+    </div>
+  </div>`;
+}
+
+function confApt(id){const a=appointments.find(x=>x.id===id);if(a){a.status='Confirmada';renderAdmin();toast('✓ Cita confirmada — '+a.name);}}
+function cancelApt(id){const a=appointments.find(x=>x.id===id);if(a){a.status='Cancelada';renderAdmin();toast('Cita cancelada');}}
+
+// ── EXTRAS ──
+function renderExtras(){
+  let h=`<div class="sec-hdr"><div class="stitle">Servicios Adicionales</div><button class="btn-r btn-sm" onclick="openExtraM(null)">+ Agregar</button></div><div style="padding:0 1.1rem">`;
+  if(!extras.length)h+='<div class="empty">Sin servicios adicionales</div>';
+  extras.forEach(e=>{
+    h+=`<div class="svc-admin"><div class="svico">${e.ico}</div>
+      <div class="svinfo"><div class="svnm">${e.name}</div><div class="svdesc">${e.desc}</div>
+      <div><span class="svpr">$${e.price.toLocaleString()}</span></div></div>
+      <div class="svacts">
+        <button class="btn-s btn-xs" onclick="openExtraM(${e.id})">✏</button>
+        <button class="btn-rd btn-xs" onclick="delExtra(${e.id})">✕</button>
+      </div></div>`;
+  });
+  h+='</div>';
+  document.getElementById('a-content').innerHTML=h;
+}
+
+function openExtraM(id){
+  if(id){
+    const e=extras.find(x=>x.id===id);
+    document.getElementById('me-ttl').textContent='Editar Servicio';
+    document.getElementById('me-id').value=id;
+    document.getElementById('me-nm').value=e.name;
+    document.getElementById('me-dc').value=e.desc;
+    document.getElementById('me-pr').value=e.price;
+    document.getElementById('me-ic').value=e.ico;
+  } else {
+    document.getElementById('me-ttl').textContent='Agregar Servicio Extra';
+    ['me-id','me-nm','me-dc','me-pr'].forEach(x=>document.getElementById(x).value='');
+    document.getElementById('me-ic').value='✨';
+  }
+  om('m-extra');
+}
+
+function saveExtra(){
+  const id=parseInt(document.getElementById('me-id').value)||null;
+  const n=document.getElementById('me-nm').value.trim();
+  const d=document.getElementById('me-dc').value.trim();
+  const p=parseInt(document.getElementById('me-pr').value)||0;
+  const ic=document.getElementById('me-ic').value.trim()||'✨';
+  if(!n||!p){toast('Completa nombre y precio');return;}
+  if(id){
+    const e=extras.find(x=>x.id===id);
+    if(e){e.name=n;e.desc=d;e.price=p;e.ico=ic;}
+    toast('Servicio actualizado');
+  } else {
+    extras.push({id:extras.length?Math.max(...extras.map(x=>x.id))+1:1,name:n,desc:d,price:p,ico:ic});
+    toast('✨ Servicio agregado');
+  }
+  cm('m-extra');renderAdmin();
+}
+
+function delExtra(id){extras=extras.filter(x=>x.id!==id);toast('Eliminado');renderAdmin();}
+
+// ── PROMOS ──
+function renderPromos(){
+  let h=`<div class="sec-hdr"><div class="stitle">Promociones</div><button class="btn-r btn-sm" onclick="openPromoM(null)">+ Nueva</button></div><div style="padding:0 1.1rem">`;
+  if(!promos.length)h+='<div class="empty">Sin promociones activas</div>';
+  promos.forEach(p=>{
+    const pct=p.orig?Math.round((1-p.price/p.orig)*100):0;
+    h+=`<div class="svc-admin promo"><div class="svico">🎁</div>
+      <div class="svinfo"><div class="svnm">${p.name}</div><div class="svdesc">${p.desc}</div>
+      <div><span class="svpr">$${p.price.toLocaleString()}</span>${p.orig?`<span class="svold">$${p.orig.toLocaleString()}</span>`:''}${pct?`<span class="svbadge">-${pct}%</span>`:''}</div>
+      <div style="font-size:.56rem;color:var(--wd);margin-top:.2rem">📅 Hasta: ${p.until}</div></div>
+      <div class="svacts">
+        <button class="btn-s btn-xs" onclick="openPromoM(${p.id})">✏</button>
+        <button class="btn-rd btn-xs" onclick="delPromo(${p.id})">✕</button>
+      </div></div>`;
+  });
+  h+='</div>';
+  document.getElementById('a-content').innerHTML=h;
+}
+
+function openPromoM(id){
+  if(id){
+    const p=promos.find(x=>x.id===id);
+    document.getElementById('mp-ttl').textContent='Editar Promoción';
+    document.getElementById('mp-id').value=id;
+    document.getElementById('mp-nm').value=p.name;
+    document.getElementById('mp-dc').value=p.desc;
+    document.getElementById('mp-pr').value=p.price;
+    document.getElementById('mp-or').value=p.orig||'';
+    document.getElementById('mp-un').value=p.until;
+  } else {
+    document.getElementById('mp-ttl').textContent='Nueva Promoción';
+    ['mp-id','mp-nm','mp-dc','mp-pr','mp-or','mp-un'].forEach(x=>document.getElementById(x).value='');
+  }
+  om('m-promo');
+}
+
+function savePromo(){
+  const id=parseInt(document.getElementById('mp-id').value)||null;
+  const n=document.getElementById('mp-nm').value.trim();
+  const d=document.getElementById('mp-dc').value.trim();
+  const p=parseInt(document.getElementById('mp-pr').value)||0;
+  const o=parseInt(document.getElementById('mp-or').value)||0;
+  const u=document.getElementById('mp-un').value;
+  if(!n||!p){toast('Completa nombre y precio');return;}
+  if(id){
+    const pr=promos.find(x=>x.id===id);
+    if(pr){pr.name=n;pr.desc=d;pr.price=p;pr.orig=o;pr.until=u;}
+    toast('Promoción actualizada');
+  } else {
+    promos.push({id:promos.length?Math.max(...promos.map(x=>x.id))+1:1,name:n,desc:d,price:p,orig:o,until:u});
+    toast('🎁 Promoción publicada');
+  }
+  cm('m-promo');renderAdmin();
+}
+
+function delPromo(id){promos=promos.filter(x=>x.id!==id);toast('Eliminada');renderAdmin();}
+
+// ── RESEÑAS ──
+function renderResenas(){
+  const avg=reviews.length?Math.round(reviews.reduce((s,r)=>s+r.stars,0)/reviews.length*10)/10:0;
+  let h=`<div class="sec-hdr"><div><div class="stitle">Reseñas (${reviews.length})</div><div style="font-size:.62rem;color:var(--wd)">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5-Math.round(avg))} ${avg}/5</div></div></div><div style="padding:0 1.1rem">`;
+  if(!reviews.length)h+='<div class="empty">Sin reseñas aún</div>';
+  [...reviews].reverse().forEach(r=>{
+    h+=`<div class="rvcard">
+      <div class="rv-top"><div class="rv-nm">${r.name}</div><div class="rv-dt">${r.date}</div></div>
+      <div class="rv-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+      <div class="rv-txt">"${r.txt}"</div>
+      ${r.sug?`<div class="rv-sug">💡 ${r.sug}</div>`:''}
+    </div>`;
+  });
+  h+='</div>';
+  document.getElementById('a-content').innerHTML=h;
+}
+
+// ── CONFIG ──
+function renderConfig(){
+  const h=`<div style="padding:1.1rem">
+    <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;color:var(--rose);margin-bottom:1rem">Configuración</div>
+
+    <div style="background:var(--bk2);border:1px solid rgba(232,100,154,.12);padding:1rem;margin-bottom:.9rem">
+      <div style="font-size:.72rem;color:var(--w);margin-bottom:.7rem;font-weight:500">🔐 Cambiar PIN</div>
+      <div class="field"><label>PIN Actual</label><input type="password" id="pc-cur" placeholder="••••" maxlength="4"></div>
+      <div class="field"><label>Nuevo PIN</label><input type="password" id="pc-new" placeholder="••••" maxlength="4"></div>
+      <div class="field"><label>Confirmar PIN</label><input type="password" id="pc-con" placeholder="••••" maxlength="4"></div>
+      <button class="btn-r" style="width:100%" onclick="changePin()">Actualizar PIN</button>
+    </div>
+
+    <div style="background:var(--bk2);border:1px solid rgba(232,100,154,.12);padding:1rem;margin-bottom:.9rem">
+      <div style="font-size:.72rem;color:var(--w);margin-bottom:.7rem;font-weight:500">🏪 Datos del Studio</div>
+      <div class="field"><label>Nombre</label><input type="text" value="ANAYL'S Studio Profesional"></div>
+      <div class="field"><label>Teléfono</label><input type="tel" value="55644214"></div>
+      <div class="field"><label>Horario</label><input type="text" value="8:30 AM – 3:30 PM"></div>
+      <button class="btn-r" style="width:100%" onclick="toast('✅ Datos guardados')">Guardar</button>
+    </div>
+
+    <div style="background:var(--bk2);border:1px solid rgba(232,100,154,.12);padding:1rem">
+      <div style="font-size:.72rem;color:var(--w);margin-bottom:.5rem;font-weight:500">📊 Resumen</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:.65rem;color:var(--wd)">
+        <div>Total citas:<br><span style="color:var(--rose);font-size:.9rem;font-family:'Playfair Display',serif">${appointments.length}</span></div>
+        <div>Reseñas recibidas:<br><span style="color:var(--rose);font-size:.9rem;font-family:'Playfair Display',serif">${reviews.length}</span></div>
+        <div>Servicios extras:<br><span style="color:var(--rose);font-size:.9rem;font-family:'Playfair Display',serif">${extras.length}</span></div>
+        <div>Promos activas:<br><span style="color:var(--rose);font-size:.9rem;font-family:'Playfair Display',serif">${promos.length}</span></div>
+      </div>
+    </div>
+
+    <div style="font-size:.56rem;color:var(--wd);text-align:center;padding:1.2rem;letter-spacing:.1em">
+      ANAYL'S Studio · v1.0 · Desarrollado con 💅 por JC Fontanills
+    </div>
+  </div>`;
+  document.getElementById('a-content').innerHTML=h;
+}
+
+function changePin(){
+  const c=document.getElementById('pc-cur').value;
+  const n=document.getElementById('pc-new').value;
+  const k=document.getElementById('pc-con').value;
+  if(c!==adminPin){toast('PIN actual incorrecto');return;}
+  if(n.length<4){toast('El PIN debe tener 4 dígitos');return;}
+  if(n!==k){toast('Los PINs no coinciden');return;}
+  adminPin=n;toast('🔐 PIN actualizado');
+  ['pc-cur','pc-new','pc-con'].forEach(id=>document.getElementById(id).value='');
+}
+
+// ── HELPERS ──
+function fmtDate(s){const d=new Date(s+'T12:00');return d.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'});}
+function fmtDateS(s){const d=new Date(s+'T12:00');return d.toLocaleDateString('es',{day:'numeric',month:'short'});}
+
+window.onclick=e=>{
+  ['m-extra','m-promo'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(e.target===el)cm(id);
+  });
+};
+</script>
+</body>
+</html>
